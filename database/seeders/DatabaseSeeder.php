@@ -24,9 +24,9 @@ class DatabaseSeeder extends Seeder
     {
         \App\Models\User::factory(10)->create();
 
-        Storage::deleteDirectory('products');
+        Storage::deleteDirectory('tests/products');
 
-        Storage::makeDirectory('products');
+        Storage::makeDirectory('tests/products');
 
         $this->call([
             BrandSeeder::class,
