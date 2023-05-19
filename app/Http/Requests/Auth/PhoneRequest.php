@@ -4,7 +4,7 @@ namespace App\Http\Requests\Auth;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class ValidateNameRequest extends FormRequest
+class PhoneRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,8 +22,7 @@ class ValidateNameRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string|min:3|max:60',
-            'lastName' => 'required|string|min:3|max:60',
+            'phone' => 'required|numeric|max_digits:15|min_digits:10'
         ];
     }
 }

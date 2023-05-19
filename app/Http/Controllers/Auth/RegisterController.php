@@ -6,19 +6,19 @@ use Carbon\Carbon;
 use App\Models\User;
 use App\Jobs\SendCodeJob;
 use Illuminate\Support\Str;
-use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Auth\RegisterRequest;
-use App\Http\Requests\Auth\UserCodeRequest;
-use App\Http\Requests\Auth\ValidateNameRequest;
-use App\Http\Requests\Auth\ValidateEmailRequest;
-use App\Http\Requests\Auth\ValidatePasswordRequest;
+use App\Http\Requests\Auth\{
+    PhoneRequest,
+    RegisterRequest,
+    UserCodeRequest,
+    ValidateNameRequest,
+    ValidateEmailRequest,
+    ValidatePasswordRequest
+};
 
 class RegisterController extends Controller
 {
-   
     /**
      * Validamos el email
      *
@@ -30,7 +30,7 @@ class RegisterController extends Controller
         try {
             // Añadir logica para enviar instrucciones al correo
             $user = User::create([
-                'email' => $request->email,
+                'email' => Str::lower($request->email),
                 'code' => Str::upper(Str::random(4))
             ]);
 
@@ -45,7 +45,7 @@ class RegisterController extends Controller
         }
     }
 
-     /**
+    /**
      * Validamos los nombres y apellido
      *
      * @param ValidatePasswordRequest $request
@@ -56,6 +56,10 @@ class RegisterController extends Controller
         return $this->response->statusOk();
     }
 
+    public function validatePhone(PhoneRequest $request): JsonResponse
+    {
+        return $this->response->statusOk();
+    }
 
     /**
      * Validamos la password
@@ -68,11 +72,16 @@ class RegisterController extends Controller
         return $this->response->statusOk();
     }
 
-    
-    public function confirmEmail(UserCodeRequest $request)
+    /**
+     * Validamos que el Codigo enviado a su correo sea válido
+     *
+     * @param UserCodeRequest $request
+     * @return JsonResponse
+     */
+    public function confirmEmail(UserCodeRequest $request): JsonResponse
     {
         try {
-            $user = User::where('code', $request->validated())->first();
+            $user = User::where('code', $request->code)->first();
 
             if (!$user) {
                 return response()->json([
@@ -90,21 +99,38 @@ class RegisterController extends Controller
         }
     }
 
+    /**
+     * Registramos al usuario por completo
+     *
+     * @param RegisterRequest $request
+     * @return JsonResponse
+     */
     public function registerUser(RegisterRequest $request): JsonResponse
     {
+        // Formateo de nombres
+        $capitalizedName = Str::ucfirst(Str::lower($request->name));
+        $capitalizedLastName = Str::ucfirst(Str::lower($request->lastName));
+
         try {
             $user = User::where('email', $request->email)->firstOrFail();
 
+            if ($user->email_verified_at === null && $user->code !== null) {
+                return response()->json([
+                    'error' => 'Debes validar tu correo electrónico para continuar'
+                ], 428);
+            }
+
             $user->update([
-                'name' => $request->name,
-                'lastname' => $request->lastname,
-                'email' => $request->email,
+                'name' => $capitalizedName,
+                'lastname' => $capitalizedLastName,
+                'phone' => $request->phone,
+                'email' => Str::lower($request->email),
                 'password' => bcrypt($request->password),
                 'code' => null
             ]);
 
             return response()->json([
-                'message' => 'Te has registrado con satisfactoriamente.'
+                'message' => 'Te has registrado satisfactoriamente.'
             ], 201);
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             return $this->response->ModelError($e->getMessage(), 'email');
