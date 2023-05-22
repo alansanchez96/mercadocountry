@@ -12,9 +12,11 @@ class CategoryController extends Controller
     public function index()
     {
         try {
-            $categories = Category::select('id','name')
-                ->limit(10)
-                ->get();
+            $categories = Category::select('id', 'name')
+                ->with(['products', 'subcategory'])
+                ->limit(6)
+                ->get()
+                ->shuffle();
 
             return new CategoryCollection($categories);
         } catch (\Exception $e) {
