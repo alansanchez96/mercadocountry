@@ -16,7 +16,7 @@ class SubcategoryController extends Controller
     public function index()
     {
         try {
-            $subcategories = Subcategory::select('id', 'name', 'category_id')
+            $subcategories = Subcategory::select('id', 'name', 'slug', 'category_id')
                 ->get();
 
             return new SubcategoryCollection($subcategories);

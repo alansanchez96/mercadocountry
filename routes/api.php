@@ -62,7 +62,7 @@ Route::apiResource('categories', CategoryController::class)->except('update', 's
 
 // EndPoint SUBCATEGORIES
 Route::controller(SubcategoryController::class)->group(function () {
-    Route::get('/categories/subcategories', 'index')->name('subcategories.index');
+    Route::get('/subcategories', 'index')->name('subcategories.index');
     Route::get('/categories/{categorySlug}/subcategories/{subcategorySlug}', 'show')->name('subcategories.show');
 });
 
