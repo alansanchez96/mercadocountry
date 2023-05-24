@@ -18,7 +18,8 @@ return new class extends Migration
             $table->unsignedBigInteger('state_id'); //fk
             $table->foreign('state_id')
                 ->references('id')
-                ->on('states');
+                ->on('states')
+                ->onDelete('cascade');
             $table->timestamps();
         });
     }

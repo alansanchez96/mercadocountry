@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Resources\Products;
+namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class ProductCategoryResource extends JsonResource
+class SubcategoryResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -15,15 +15,14 @@ class ProductCategoryResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
+            'type' => 'subcategory',
+            'id' => $this->id,
             'attributes' => [
-                'id' => $this->id,
                 'name' => $this->name,
-                'price' => $this->price,
-                'brand' => $this->brand->name,
-                'images' => $this->images->pluck('url'),
+                'slug' => $this->slug,
             ],
             'links' => [
-                'self' => route('products.show', $this->id)
+                'self' => route('subcategories.show', [$this->category->slug, $this->slug])
             ]
         ];
     }

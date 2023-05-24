@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 
-class CategoryCollection extends ResourceCollection
+class ProductCollection extends ResourceCollection
 {
     /**
      * Transform the resource collection into an array.
@@ -17,7 +17,8 @@ class CategoryCollection extends ResourceCollection
         return [
             'data' => $this->resource,
             'links' => [
-                'self' => route('categories.index')
+                'self' => route('products.index')
             ]
-        ];    }
+        ];
+    }
 }

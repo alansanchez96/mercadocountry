@@ -22,7 +22,7 @@ class LoginController extends Controller
             $credencials = $request->only('password', 'email');
 
             if (!Auth::attempt($credencials)) {
-                return response()->json(['message' => 'Credencials Incorrect']);
+                return response()->json(['message' => 'Credenciales incorrectas.']);
             }
             $user = Auth::user();
 
@@ -31,7 +31,7 @@ class LoginController extends Controller
             return response()->json([
                 'message' => 'successfully',
                 "access_token" => $token
-            ]);
+            ], 200);
         } catch (\Exception $e) {
             $this->response->catch($e->getMessage());
         }

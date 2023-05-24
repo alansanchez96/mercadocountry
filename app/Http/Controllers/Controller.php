@@ -10,8 +10,11 @@ use Illuminate\Routing\Controller as BaseController;
 class Controller extends BaseController
 {
     use AuthorizesRequests, ValidatesRequests;
+    
+    protected $response;
 
-    public function __construct(protected readonly JsonResponseService $response)
+    public function __construct()
     {
+        $this->response = new JsonResponseService;
     }
 }

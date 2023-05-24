@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use App\Models\Category;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Str;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Subcategory>
@@ -17,8 +18,10 @@ class SubcategoryFactory extends Factory
      */
     public function definition(): array
     {
+        $name = fake()-> word();
         return [
-            'name' => fake()-> word(),
+            'name' => $name,
+            'slug' => Str::slug($name),
             'category_id' => Category::all()->random()->id
         ];
     }

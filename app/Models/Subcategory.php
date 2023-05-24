@@ -2,15 +2,20 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\Category;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\{Category, Product};
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Subcategory extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name','category_id'];
+    protected $fillable = [
+        'name',
+        'slug',
+        'category_id'
+    ];
 
     public function products()
     {
