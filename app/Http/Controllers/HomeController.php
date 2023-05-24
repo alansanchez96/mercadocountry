@@ -13,7 +13,7 @@ class HomeController extends Controller
     {
         try {
             // Colleccion con 6 categorias ordenadas aleatoriamente 
-            $categories = Category::select('id', 'name')
+            $categories = Category::select('id', 'name', 'slug')
                 ->with(['products', 'subcategory'])
                 ->limit(6)
                 ->get()
