@@ -1,13 +1,14 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\CartController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\User\UserController;
 use App\Http\Controllers\Auth\LoginController;
-use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\SubcategoryController;
+use App\Http\Controllers\Auth\RegisterController;
 
 /*
 |--------------------------------------------------------------------------
@@ -64,5 +65,15 @@ Route::apiResource('categories', CategoryController::class)->except('update', 's
 Route::controller(SubcategoryController::class)->group(function () {
     Route::get('/subcategories', 'index')->name('subcategories.index');
     Route::get('/categories/{categorySlug}/subcategories/{subcategorySlug}', 'show')->name('subcategories.show');
+    Route::get('/categories/{categorySlug}/subcategories/{subcategorySlug}/products', 'getAllProducts')->name('subcategories.getAllProducts');
 });
 
+// EndPoint De el carrito
+Route::controller(CartController::class)->group(function () {
+    Route::group(['middleware' => ['auth:sanctum']], function () {
+        Route::post('/add-cart', 'addToCart');
+        Route::get('/view-cart', 'viewCart');
+        Route::put('/update-cart', 'updateCartItem');
+        Route::delete('/remove-cart/{id}', 'removeCartItem');
+    });
+});

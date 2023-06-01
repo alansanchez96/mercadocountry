@@ -27,6 +27,11 @@ class ProductFactory extends Factory
             'description' => fake()-> sentence(),
             'price' => fake()-> randomFloat(2, 100, 99999),//(decimal,lower,upper)
             'stock' => fake()-> randomDigit(),
+            'measures' => json_encode([
+                'altura' => fake()-> randomDigit(2),
+                'ancho' => fake()-> randomDigit(2),
+                'largo' => fake()-> randomDigit(2),
+            ]),
             'status' => fake()-> randomElement([
                 Product::PUBLISH,
                 Product::UNPUBLISH,

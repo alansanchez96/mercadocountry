@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class SubcategoryResource extends JsonResource
+class CartResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -15,20 +15,17 @@ class SubcategoryResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'type' => 'subcategory',
+            'type' => 'cart',
             'id' => $this->id,
             'attributes' => [
-                'name' => $this->name,
-                'slug' => $this->slug,
+                'quantity' => $this->quantity,
+                'total_price_product' => $this->quantity * $this->products->price
             ],
             'relationships' => [
-                'category' => [
-                    'name' => $this->category->name,
-                    'slug' => $this->category->slug
-                ]
+                'products' => ProductResource::make($this->products)  
             ],
             'links' => [
-                'self' => route('subcategories.show', [$this->category->slug, $this->slug])
+                // 'self' => route('products.show', $this->id)
             ]
         ];
     }

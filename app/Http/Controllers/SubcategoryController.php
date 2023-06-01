@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Product;
+use App\Models\Category;
 use App\Models\Subcategory;
-use Illuminate\Support\Str;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\SubcategoryRequest;
+use App\Http\Resources\ProductCollection;
 use App\Http\Resources\SubcategoryResource;
 use App\Http\Resources\SubcategoryCollection;
-use App\Models\Category;
 
 class SubcategoryController extends Controller
 {
@@ -28,12 +28,51 @@ class SubcategoryController extends Controller
     public function show(string $categorySlug, string $subcategorySlug)
     {
         try {
+            $category = Category::firstWhere('slug', $categorySlug);
+            $subcategory = Subcategory::firstWhere('slug', $subcategorySlug);
+
+            if (!$category)
+                return response()->json([
+                    'error' => 'La categoria no existe.'
+                ]);
+
+            if (!$subcategory)
+                return response()->json([
+                    'error' => 'La subcategoria no existe.'
+                ]);
+
             $subcategory =
                 Subcategory::whereHas('category', fn ($q) => $q->where('slug', $categorySlug))
                 ->where('slug', $subcategorySlug)
                 ->firstOrFail();
 
             return new SubcategoryResource($subcategory);
+        } catch (\Exception $e) {
+            return $this->response->catch($e->getMessage());
+        }
+    }
+
+    public function getAllProducts(string $categorySlug, string $subcategorySlug)
+    {
+        try {
+            $category = Category::firstWhere('slug', $categorySlug);
+            $subcategory = Subcategory::firstWhere('slug', $subcategorySlug);
+
+            if (!$category)
+                return response()->json([
+                    'error' => 'La categoria no existe.'
+                ]);
+
+            if (!$subcategory)
+                return response()->json([
+                    'error' => 'La subcategoria no existe.'
+                ]);
+
+            $products = Product::whereHas('subcategory', fn ($q) => $q->where('slug', $subcategorySlug))
+                ->where('status', Product::PUBLISH)
+                ->paginate(20);
+
+            return new ProductCollection($products);
         } catch (\Exception $e) {
             return $this->response->catch($e->getMessage());
         }

@@ -18,6 +18,7 @@ return new class extends Migration
             $table->text('description');
             $table->float('price');
             $table->integer('stock');
+            $table->text('measures');
             $table->unsignedBigInteger('brand_id');
             $table->foreign('brand_id')
                 ->references('id')

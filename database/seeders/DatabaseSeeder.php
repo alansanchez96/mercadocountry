@@ -23,11 +23,7 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         \App\Models\User::factory(10)->create();
-
-        Storage::deleteDirectory('products');
-
-        Storage::makeDirectory('products');
-
+        
         $this->call([
             BrandSeeder::class,
             CategorySeeder::class,
@@ -35,7 +31,8 @@ class DatabaseSeeder extends Seeder
             ProductSeeder::class,
             StateSeeder::class,
             CitySeeder::class,
-            OrderSeeder::class
+            OrderSeeder::class,
+            // CartSeeder::class
         ]);
     }
 }

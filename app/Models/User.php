@@ -55,4 +55,9 @@ class User extends Authenticatable
     {
         return $this->morphMany(Image::class, 'imageable');
     }
+
+    public function carts()
+    {
+        return $this->hasMany(Cart::class);
+    }
 }
