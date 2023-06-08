@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use Tests\TestCase;
 use App\Models\Cart;
 use App\Models\User;
+use App\Models\Order;
 use App\Models\Product;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -137,5 +138,46 @@ class CartTest extends TestCase
 
         // Verificar que el elemento de carrito haya sido eliminado de la base de datos
         $this->assertDatabaseMissing('carts', ['id' => $cartItem->id]);
+    }
+
+    
+    public function test_record_conferences_or_workshops()
+    {
+
+        // Crear el usuario de registro
+        $user = User::factory()->create();
+
+        $this->actingAs($user);
+
+        // Crear los eventos disponibles
+        $events = Product::factory(5)->create(['stock' => 1]);
+
+        // Creamos un registro para el usuario
+        $record = Order::factory()->create(
+            [
+                'user_id' => $user->id,
+            ]
+        );
+
+        // Realizar la solicitud HTTP
+        $response = $this->get(['/api/paypal/process/', 41555]);
+
+        $registroEventos = $record->event->toArray();
+
+        $this->assertCount($events->count(), $registroEventos);
+
+        foreach ($registroEventos as $event) {
+            $this->assertEquals(0, $event['available']);
+        }
+
+        $this->assertEquals($gift->id, $record->gift_id);
+
+        // Verificar la respuesta
+        $response->assertSuccessful();
+
+        $response->assertJson([
+            'resultado' => true,
+            'token' => $record->token,
+        ]);
     }
 }

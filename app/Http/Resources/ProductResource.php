@@ -28,10 +28,10 @@ class ProductResource extends JsonResource
             'relationships' => [
                 'images' => $this->images->pluck('url'),
                 'subcategories' => [
-                    'name' => $this->subcategory->name
+                    //'name' => $this->subcategory->name
                 ],
                 'brand' => [
-                    'name' => $this->brand->name
+                    //'name' => $this->brand->name
                 ]
             ],
             'links' => [

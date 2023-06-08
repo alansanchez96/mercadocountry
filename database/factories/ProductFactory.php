@@ -33,8 +33,8 @@ class ProductFactory extends Factory
                 'largo' => fake()-> randomDigit(2),
             ]),
             'status' => fake()-> randomElement([
-                Product::PUBLISH,
-                Product::UNPUBLISH,
+                Product::NEW,
+                Product::USED,
             ]),
             'subcategory_id'=> Subcategory::all()->random()->id,
             'brand_id' => Brand::all()->random()->id

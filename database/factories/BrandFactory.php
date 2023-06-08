@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
+
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Brand>
  */
@@ -16,7 +17,25 @@ class BrandFactory extends Factory
      */
     public function definition(): array
     {
-        $name = fake()->unique()->company();
+        $name = fake()->unique()->randomElement([
+            'X-BOX',
+            'Apple',
+            'BGH',
+            'Philips',
+            'Philco',
+            'Lenovo',
+            'Sony',
+            'PlayStation',
+            'HP',
+            'Atma',
+            'Nintendo',
+            'Nokia',
+            'Motorola',
+            'Xiaomi',
+            'LG',
+            'Whirpool'
+        ]);
+
         return [
             'name' => $name,
             'slug' => Str::slug($name)

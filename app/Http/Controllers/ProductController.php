@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Services\ImageService;
 use App\Http\Controllers\Controller;
@@ -23,8 +24,8 @@ class ProductController extends Controller
     public function index()
     {
         try {
-            $products = Product::select('id', 'name', 'description', 'price', 'stock', 'brand_id', 'subcategory_id')
-                ->where('status', Product::PUBLISH)
+            $products = Product::select('id', 'name', 'slug', 'description', 'price', 'stock', 'brand_id', 'subcategory_id')
+                ->where('status', Product::NEW)
                 ->limit(10)
                 ->get()
                 ->shuffle();
@@ -35,12 +36,12 @@ class ProductController extends Controller
         }
     }
 
-    public function show(int $id)
+    public function show(string $slug)
     {
         try {
-            $products = Product::find($id);
+            $product = Product::firstWhere('slug', $slug);
 
-            return new ProductResource($products);
+            return new ProductResource($product);
         } catch (\Exception $e) {
             return $this->response->catch($e->getMessage());
         }
@@ -48,8 +49,19 @@ class ProductController extends Controller
 
     public function store(ProductRequest $request)
     {
+        $productSlug = Str::lower(Str::slug($request->name));
         try {
-            $product = Product::create($request->validated());
+            $product = Product::create([
+                'name' => $request->name,
+                'slug' => $productSlug,
+                'description' => $request->description,
+                'price' => $request->price,
+                'stock' => $request->stock,
+                'measures' => $request->measures,
+                'brand_id' => $request->brand_id,
+                'subcategory_id' => $request->subcategory_id,
+                'status' => $request->status
+            ]);
 
             if ($request->hasFile("image")) {
                 foreach ($request->file('image') as $image) {
@@ -65,6 +77,8 @@ class ProductController extends Controller
 
     public function update(Product $product, Request $request)
     {
+        $productSlug = Str::lower(Str::slug($request->name));
+
         try {
             if ($request->hasFile("image")) {
                 $this->image->delete($product);
@@ -75,6 +89,7 @@ class ProductController extends Controller
 
             $product->update([
                 'name' => $request->name,
+                'slug' => $productSlug,
                 'description' => $request->description,
                 'price' =>  $request->price,
                 'stock' =>  $request->stock,

@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\User\UserController;
@@ -47,14 +48,29 @@ Route::controller(LoginController::class)->group(function () {
 Route::apiResource('products', ProductController::class)->except('update');
 Route::post('/products/{product}', [ProductController::class, 'update']);
 
-// EndPoint USERS
+// Middleware Sanctum
 Route::middleware('auth:sanctum')->group(function () {
+    // EndPoint USERS
     Route::controller(UserController::class)->group(function () {
         Route::post('/profile/confirm-email', 'confirmEmail')->name('profile.confirmEmail');
         Route::middleware('email.verified')->group(function () {
             Route::get('/profile', 'getProfile')->name('profile.user');
             Route::post('/profile', 'update')->name('profile.update');
         });
+    });
+
+    // EndPoint De el carrito
+    Route::controller(CartController::class)->group(function () {
+        Route::post('/add-cart', 'addToCart');
+        Route::get('/view-cart', 'viewCart');
+        Route::put('/update-cart', 'updateCartItem');
+        Route::delete('/remove-cart/{id}', 'removeCartItem');
+    });
+
+    // EndPoint PaymentProcess
+    Route::controller(OrderController::class)->group(function () {
+        Route::get('/paypal/process/{orderID}', 'process');
+        Route::post('/remove-products-cart', 'removeCartProduct');
     });
 });
 
@@ -66,14 +82,4 @@ Route::controller(SubcategoryController::class)->group(function () {
     Route::get('/subcategories', 'index')->name('subcategories.index');
     Route::get('/categories/{categorySlug}/subcategories/{subcategorySlug}', 'show')->name('subcategories.show');
     Route::get('/categories/{categorySlug}/subcategories/{subcategorySlug}/products', 'getAllProducts')->name('subcategories.getAllProducts');
-});
-
-// EndPoint De el carrito
-Route::controller(CartController::class)->group(function () {
-    Route::group(['middleware' => ['auth:sanctum']], function () {
-        Route::post('/add-cart', 'addToCart');
-        Route::get('/view-cart', 'viewCart');
-        Route::put('/update-cart', 'updateCartItem');
-        Route::delete('/remove-cart/{id}', 'removeCartItem');
-    });
 });

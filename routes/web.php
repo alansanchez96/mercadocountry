@@ -6,5 +6,5 @@ use Illuminate\Support\Facades\Route;
  * Redireccionamos a la URL para que la API no tenga acceso
  */
 Route::get('/', function () {
-    return redirect('https://nocountry.tech/');
+    return view('pay');
 });

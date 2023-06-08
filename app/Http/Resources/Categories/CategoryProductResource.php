@@ -21,6 +21,7 @@ class CategoryProductResource extends JsonResource
                 'price' => $this->price,
                 'brand' => $this->brand->name,
                 'images' => $this->images->pluck('url'),
+                'slug' => $this->slug,
             ],
             'links' => [
                 'self' => route('products.show', $this->id)

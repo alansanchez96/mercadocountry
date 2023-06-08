@@ -34,7 +34,7 @@ class ProductTest extends TestCase
             'description' => 'descripcion del celular',
             'price' => "10",
             'stock' => "10",
-            'status' =>  'PUBLISH',
+            'status' =>  'NEW',
             'measures' =>  json_encode(['altura' => 10, 'ancho' => 20 , 'largo' => 30]),
             'brand_id' => 1,
             'subcategory_id' => 1,

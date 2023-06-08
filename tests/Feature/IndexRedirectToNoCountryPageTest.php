@@ -3,7 +3,10 @@
 namespace Tests\Feature;
 
 // use Illuminate\Foundation\Testing\RefreshDatabase;
+
+use App\Models\Product;
 use Tests\TestCase;
+use App\Models\Order;
 
 class IndexRedirectToNoCountryPageTest extends TestCase
 {
@@ -13,4 +16,5 @@ class IndexRedirectToNoCountryPageTest extends TestCase
 
         $response->assertRedirect('https://nocountry.tech/');
     }
+
 }
