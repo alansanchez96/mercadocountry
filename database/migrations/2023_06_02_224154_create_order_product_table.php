@@ -16,12 +16,14 @@ return new class extends Migration
             $table->unsignedBigInteger('order_id');
             $table->foreign('order_id')
                 ->references('id')
-                ->on('orders');
+                ->on('orders')
+                ->onDelete('cascade');
                 
             $table->unsignedBigInteger('product_id');
             $table->foreign('product_id')
                 ->references('id')
-                ->on('products');
+                ->on('products')
+                ->onDelete('cascade');
             
             $table->timestamps();
         });
