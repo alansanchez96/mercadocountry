@@ -6,7 +6,7 @@ use App\Models\Product;
 use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
-use Intervention\Image\Facades\Image as Img;
+use Illuminate\Support\Facades\Image;
 
 class ImageService
 {
@@ -25,12 +25,10 @@ class ImageService
 
         $nameImage = Str::random(15);
 
-        $img_png = Img::make($file)->fit(800, 800)->encode('png', 80);
-
-        Storage::disk('public')->put($path . '/' . $nameImage . '.png', (string)$img_png, 'public');
+        $image = $file->storeAs($path, $nameImage . '.png', 'public');
 
         $product->images()->create([
-            'url' => $nameImage . ".png",
+            'url' => $image,
         ]);
     }
 
